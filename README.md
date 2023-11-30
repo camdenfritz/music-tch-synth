@@ -12,7 +12,7 @@ A simple synthesizer application built in Python using Pygame and Sounddevice. I
 1. **Clone the Repository (Optional)**
    If you have the synthesizer script (`synth.py`) as a standalone, you can skip this step. Otherwise, clone the repository containing the script to your local machine using:
 
-   `git clone <repository-url>`
+   `git clone https://github.com/camdenfritz/music-tch-synth.git`
 
 2. **Create a Virtual Environment**
    Navigate to the project directory (where `synth.py` is located) and create a virtual environment. This will keep the dependencies required for the project separate from your global Python installation.

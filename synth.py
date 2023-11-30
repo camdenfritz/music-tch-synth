@@ -42,6 +42,7 @@ note_frequencies = {
 
 global_amplitude = 0.5
 global_freq_adjustment = 1.0
+global_effects_freq_adjustment = global_freq_adjustment
 
 # Synthesizer parameters
 sample_rate = 44100
@@ -109,6 +110,15 @@ def mix_waves(waves):
 
 running = True
 active_notes = {}
+
+is_long_increase_active = False
+long_increase_rate = 1.01  # Rate of frequency increase
+
+is_wobble_active = False
+wobble_rate = 0.01  # Speed of wobble
+wobble_amount = 1.05  # Range of wobble
+wobble_direction = 1  # Wobble direction
+
 while running:
     # Update max_length if there are active notes
     max_length = 0
@@ -120,7 +130,23 @@ while running:
     # Generate and mix waves if there are active notes
     screen.fill((0, 0, 0))
 
-    if max_length > 0:
+    if is_long_increase_active:
+        global_freq_adjustment *= long_increase_rate
+        if (
+            global_freq_adjustment - global_effects_freq_adjustment > 2
+        ):  # Reset if it gets too high
+            global_freq_adjustment = global_effects_freq_adjustment
+
+    # Apply wobble effect
+    if is_wobble_active:
+        global_freq_adjustment *= 1 + wobble_direction * wobble_rate
+        if (
+            global_freq_adjustment > wobble_amount
+            or global_freq_adjustment < 1 / wobble_amount
+        ):
+            wobble_direction *= -1
+
+    if max_length > 0 and active_notes:
         waves = [
             generate_wave(freq[0], freq[1], global_amplitude, max_length)
             for freq in active_notes.values()
@@ -143,6 +169,16 @@ while running:
                 global_freq_adjustment *= 1.05
             elif event.key == pygame.K_LEFT:
                 global_freq_adjustment /= 1.05
+            elif event.key == pygame.K_1:
+                is_long_increase_active = not is_long_increase_active
+
+            # Toggle wobble effect
+            elif event.key == pygame.K_2:
+                is_wobble_active = not is_wobble_active
+
+            elif event.key == pygame.K_0:
+                global_freq_adjustment = 1.0  # Reset frequency
+
         elif event.type == pygame.KEYUP:
             if event.key in active_notes:
                 del active_notes[event.key]

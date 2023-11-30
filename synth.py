@@ -86,7 +86,7 @@ def generate_wave(freq, wave_type="sine", amplitude=0.5, max_length=0):
             - 1
         )
 
-        # Pad wave if shorter than the max_length
+    # Pad wave if shorter than the max_length
     if len(wave) < max_length:
         wave = np.pad(wave, (0, max_length - len(wave)), "constant")
 
